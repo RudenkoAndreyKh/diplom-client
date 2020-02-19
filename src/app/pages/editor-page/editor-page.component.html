@@ -1,0 +1,15 @@
+<!-- <app-editor></app-editor> -->
+<div>
+    <div class="file-management">
+        <div style="background-color: aliceblue;">{{projectName}}</div>
+        <div class="folder" *ngFor="let folder of projectDirectory; let i = index">
+            <app-file-input (blurToEmit)="blurCreatingFolderInput($event)" *ngIf="folder.folderName.length<1" index="{{i}}"></app-file-input>
+            <div *ngIf="folder.folderName.length>0" class="folder">{{folder.folderName}}</div>
+        </div>
+    </div>
+
+    <div [ngStyle]="{'top': contextMenuPosition.y, 'left': contextMenuPosition.x}" class="contextMenu"
+        *ngIf="isContextMenuOpen" (click)="isContextMenuOpen=false">
+        <button style="width: 100%;" (click)="createFolder()">New folder</button>
+    </div>
+</div>
