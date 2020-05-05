@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import 'ngx-monaco-editor'
+import { FileObserver } from 'src/app/services/file.observable.service';
 
 @Component({
   selector: 'app-editor',
@@ -7,7 +8,7 @@ import 'ngx-monaco-editor'
   styleUrls: ['./editor.component.scss']
 })
 export class EditorComponent implements OnInit {
-  public code: string = 'function x() {\nconsole.log("Hello world!");\n}';
+  @Input() code: string;
   public editorOptions = {
     theme: 'vs-dark',
     language: 'typescript',
@@ -16,10 +17,16 @@ export class EditorComponent implements OnInit {
     },
   };
 
-  constructor() { }
+  constructor(private fileObs: FileObserver) { }
 
   ngOnInit() {
 
+  }
+
+  public onKeyDown(e) {
+    if (e.keyCode) {
+      this.fileObs.fileCodeObserver(this.code);
+    }
   }
 
   public click(e) {

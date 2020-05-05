@@ -1,0 +1,39 @@
+<div *ngIf="folderView.name" cdkDrag>
+    <div cdkDropList #todoList="cdkDropList" [cdkDropListData]="folderView.children"
+        [cdkDropListConnectedTo]="[doneList]" class="example-list" (cdkDropListDropped)="drop($event)">
+        <div cdkDrag *ngFor="let file of folderView.children; let i = index">
+            <div (click)="selectFile(file); false" [ngClass]="{'selected-file': selectedFile && 
+        (selectedFile.hierarchyNumber === 
+        file.hierarchyNumber && file.path === 
+        selectedFile.path
+        )}" class="file" style="color: #ccc;" [ngStyle]="{
+                'margin-left': file.hierarchyNumber < 3 ? '20px' : file.hierarchyNumber >= 3 ? 20*(file.hierarchyNumber-1)+'px' : '0',
+                 'border-left': file.hierarchyNumber!==2 ? '1px solid #666' : '0',
+                  'padding': file.hierarchyNumber!==2 ? '2px 7px' : '2px 0px'
+                }">
+                <!-- 'background-color': file.selected ? 'royalblue': '' -->
+                <app-file-input (blurToEmit)="blurCreatingFolderInput($event)" *ngIf="file.name.length<1" index="{{i}}">
+                </app-file-input>
+                <div style="padding: 0 5px;" (click)="handleClick($event)" oncontextmenu="return false"
+                    *ngIf="file.name.length>0 && file.type==='folder'" class="folder">
+                    <div *ngIf="!file.folderOpen" style="display: flex;">&#12297; <div>{{file.name}}</div>
+                    </div>
+                    <div *ngIf="file.folderOpen" style="display: flex;">
+                        <div style="margin-left: -5px; transform: rotate(90deg);">&#12297;</div>
+                        <div style="margin-left: 5px;">{{file.name}}</div>
+                    </div>
+                </div>
+                <div (click)="handleClick($event)" oncontextmenu="return false"
+                    *ngIf="file.name.length>0 && file.type==='file'">
+                    {{file.name}}
+                </div>
+            </div>
+            <div cdkDropList [cdkDropListData]="file.children"
+                [cdkDropListConnectedTo]="[todoList]" (cdkDropListDropped)="drop($event)">
+                <app-folder-view cdkDrag [selectedFile]="selectedFile" (fileToEmit)="selectFile($event)"
+                    *ngIf="file.type==='folder' && file.folderOpen && file.children.length>0"
+                    (blurToEmit)="blurCreatingFolderInput($event)" [projectDirectory]="file"></app-folder-view>
+            </div>
+        </div>
+    </div>
+</div>

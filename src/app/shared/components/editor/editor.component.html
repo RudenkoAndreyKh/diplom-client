@@ -11,7 +11,9 @@
     <div class="left-bar-editor-container">
         <div class="left-bar"></div>
         <div class="editor-container"> -->
-            <ngx-monaco-editor class="editor" [options]="editorOptions" [(ngModel)]="code"></ngx-monaco-editor>
+            <div style="100%">
+                <ngx-monaco-editor (keydown)="onKeyDown($event)" class="editor" [options]="editorOptions" [(ngModel)]="code"></ngx-monaco-editor>
+            </div>
         <!-- </div>
     </div>
     <div class="bottom-bar">

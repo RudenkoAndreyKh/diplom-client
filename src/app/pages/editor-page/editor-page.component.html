@@ -1,15 +1,36 @@
 <!-- <app-editor></app-editor> -->
-<div>
+<div class="page" style="display: flex">
     <div class="file-management">
-        <div style="background-color: aliceblue;">{{projectName}}</div>
-        <div class="folder" *ngFor="let folder of projectDirectory; let i = index">
-            <app-file-input (blurToEmit)="blurCreatingFolderInput($event)" *ngIf="folder.folderName.length<1" index="{{i}}"></app-file-input>
-            <div *ngIf="folder.folderName.length>0" class="folder">{{folder.folderName}}</div>
+        <div style="background-color: aliceblue;">{{projectDirectory.name}}</div>
+        <app-folder-view (fileToEmit)="selectFile($event)" [selectedFile]="selectedFileInFM"
+            (blurToEmit)="blurCreatingFolderInput($event)" [projectDirectory]="projectDirectory"></app-folder-view>
+    </div>
+    <div>
+        <div class="files">
+            <ul>
+                <li (click)="selectFile(file)" [ngClass]="{'selected-file': selectedFile.path === file.path}"
+                    class="file" *ngFor="let file of files">
+                    <span>
+                        {{file.name}}
+                    </span>
+                    <span (click)="closeFile(file)" [ngStyle]="{'opacity': selectedFile.path === file.path ? 1 : 0}"
+                        class="close-file">&#10005;</span>
+                </li>
+            </ul>
         </div>
+        <app-editor (keydown)="onKeyDown($event)" [code]="selectedFile.code" *ngIf="selectedFile && selectedFile.path"></app-editor>
     </div>
 
     <div [ngStyle]="{'top': contextMenuPosition.y, 'left': contextMenuPosition.x}" class="contextMenu"
-        *ngIf="isContextMenuOpen" (click)="isContextMenuOpen=false">
-        <button style="width: 100%;" (click)="createFolder()">New folder</button>
+        *ngIf="isContextMenuOpen" (click)="closeContextMenu()">
+        <div *ngIf="projectContextMenu" class="projectContextMenu">
+            <button style="width: 100%;" (click)="createFolder()">New folder</button>
+        </div>
+        <div *ngIf="fileContextMenu" class="fileContextMenu">
+            <button style="width: 100%;" (click)="createFolder()">Rename</button>
+        </div>
+        <div *ngIf="folderContextMenu" class="folderContextMenu">
+            <button style="width: 100%;" (click)="createFolder()">New folder</button>
+        </div>
     </div>
 </div>
